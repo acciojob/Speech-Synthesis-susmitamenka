@@ -37,6 +37,53 @@
   const stopButton = document.querySelector('#stop');
 
   //Your code goes here
+	function populateVoiceList() {
+      voices = synth.getVoices();
+      voicesDropdown.innerHTML = '<option value="">Select A Voice</option>';
+      voices.forEach(voice => {
+        const option = document.createElement('option');
+        option.textContent = `${voice.name} (${voice.lang})`;
+        option.value = voice.name;
+        voicesDropdown.appendChild(option);
+      });
+    }
+
+    // Handle voice change
+    voicesDropdown.addEventListener('change', () => {
+      msg.voice = voices.find(voice => voice.name === voicesDropdown.value);
+    });
+
+    // Handle rate change
+    rateSlider.addEventListener('input', () => {
+      msg.rate = rateSlider.value;
+    });
+
+    // Handle pitch change
+    pitchSlider.addEventListener('input', () => {
+      msg.pitch = pitchSlider.value;
+    });
+
+    // Handle speak button click
+    speakButton.addEventListener('click', () => {
+      if (textArea.value.trim() === '') {
+        alert('Please enter some text.');
+        return;
+      }
+      msg.text = textArea.value;
+      synth.speak(msg);
+    });
+
+    // Handle stop button click
+    stopButton.addEventListener('click', () => {
+      synth.cancel();
+    });
+
+    // Initialize voices
+    if (synth.onvoiceschanged !== undefined) {
+      synth.onvoiceschanged = populateVoiceList;
+    } else {
+      populateVoiceList();
+    }
 </script>
 
 </body>
